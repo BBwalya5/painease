@@ -1,10 +1,12 @@
 {
   "name": "tanstack_start_ts",
   "private": true,
+  "packageManager": "npm@10",
   "sideEffects": false,
   "type": "module",
   "scripts": {
     "dev": "vite dev",
+    "start": "node .output/server/index.mjs",
     "backend:dev": "npm --prefix backend run dev",
     "backend:start": "npm --prefix backend run start",
     "build": "vite build",
