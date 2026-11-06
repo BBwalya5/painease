@@ -1,5 +1,23 @@
+USE `painease`;
+
 SET NAMES utf8mb4;
-CREATE TABLE IF NOT EXISTS `users` (
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS `guide_messages`;
+DROP TABLE IF EXISTS `pain_entries`;
+DROP TABLE IF EXISTS `user_roles`;
+DROP TABLE IF EXISTS `professional_profiles`;
+DROP TABLE IF EXISTS `profiles`;
+DROP TABLE IF EXISTS `audit_logs`;
+DROP TABLE IF EXISTS `library_articles`;
+DROP TABLE IF EXISTS `health_facilities`;
+DROP TABLE IF EXISTS `password_reset_tokens`;
+DROP TABLE IF EXISTS `auth_sessions`;
+DROP TABLE IF EXISTS `users`;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+CREATE TABLE `users` (
   `id` CHAR(36) NOT NULL,
   `email` VARCHAR(255) NOT NULL,
   `password_hash` VARCHAR(255) NULL,
@@ -17,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   KEY `idx_users_created_at` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `auth_sessions` (
+CREATE TABLE `auth_sessions` (
   `id` CHAR(36) NOT NULL,
   `user_id` CHAR(36) NOT NULL,
   `refresh_token_hash` CHAR(64) NOT NULL,
@@ -34,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `auth_sessions` (
     FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `password_reset_tokens` (
+CREATE TABLE `password_reset_tokens` (
   `id` CHAR(36) NOT NULL,
   `user_id` CHAR(36) NOT NULL,
   `token_hash` CHAR(64) NOT NULL,
@@ -49,7 +67,7 @@ CREATE TABLE IF NOT EXISTS `password_reset_tokens` (
     FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `user_roles` (
+CREATE TABLE `user_roles` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_id` CHAR(36) NOT NULL,
   `role` ENUM('admin', 'professional', 'user') NOT NULL DEFAULT 'user',
@@ -61,7 +79,7 @@ CREATE TABLE IF NOT EXISTS `user_roles` (
     FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `profiles` (
+CREATE TABLE `profiles` (
   `id` CHAR(36) NOT NULL,
   `full_name` VARCHAR(255) NULL,
   `phone` VARCHAR(50) NULL,
@@ -88,7 +106,7 @@ CREATE TABLE IF NOT EXISTS `profiles` (
     FOREIGN KEY (`id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `pain_entries` (
+CREATE TABLE `pain_entries` (
   `id` CHAR(36) NOT NULL,
   `user_id` CHAR(36) NOT NULL,
   `recorded_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -109,7 +127,7 @@ CREATE TABLE IF NOT EXISTS `pain_entries` (
     CHECK (`sleep_hours` IS NULL OR (`sleep_hours` >= 0 AND `sleep_hours` <= 24))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `guide_messages` (
+CREATE TABLE `guide_messages` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_id` CHAR(36) NOT NULL,
   `message_id` VARCHAR(255) NOT NULL,
@@ -123,7 +141,7 @@ CREATE TABLE IF NOT EXISTS `guide_messages` (
     FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `professional_profiles` (
+CREATE TABLE `professional_profiles` (
   `user_id` CHAR(36) NOT NULL,
   `full_name` VARCHAR(255) NOT NULL,
   `profession` VARCHAR(150) NOT NULL,
@@ -150,7 +168,7 @@ CREATE TABLE IF NOT EXISTS `professional_profiles` (
     FOREIGN KEY (`reviewed_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `health_facilities` (
+CREATE TABLE `health_facilities` (
   `id` CHAR(36) NOT NULL,
   `name` VARCHAR(255) NOT NULL,
   `facility_type` VARCHAR(100) NOT NULL,
@@ -172,7 +190,7 @@ CREATE TABLE IF NOT EXISTS `health_facilities` (
     FOREIGN KEY (`verified_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `library_articles` (
+CREATE TABLE `library_articles` (
   `id` CHAR(36) NOT NULL,
   `title` VARCHAR(255) NOT NULL,
   `category` VARCHAR(100) NOT NULL DEFAULT 'General',
@@ -191,7 +209,7 @@ CREATE TABLE IF NOT EXISTS `library_articles` (
     FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `audit_logs` (
+CREATE TABLE `audit_logs` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `actor_id` CHAR(36) NULL,
   `action` VARCHAR(150) NOT NULL,
