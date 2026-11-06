@@ -1,11 +1,7 @@
 [build]
 command = "npm ci && npm run build"
-publish = ".output/public"
+publish = "dist"
 
 [build.environment]
 NODE_VERSION = "22"
 NITRO_PRESET = "netlify"
-
-[functions]
-directory = ".netlify/functions-internal"
-node_bundler = "esbuild"
