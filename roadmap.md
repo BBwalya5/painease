@@ -1,0 +1,19 @@
+# PainEase roadmap (from the full development brief)
+- [x] Accounts: email/password, Google, password reset, sign out
+- [x] My Profile saved to the account
+- [x] Zambia province/district selection (towns typed)
+- [x] Front/back body map with left/right, list search, per-area details, saved history
+- [x] Condition pages
+- [x] Ease naming across the interface (nav: Home | Ease Map | Ease Guide | Ease Journey | Profile)
+- [x] Ease Safety: structured when-to-seek-help pathway before comfort recommendations (tested rules, no AI)
+- [x] Ease Guide: real AI chat, saved to account (Ease Companion still to do)
+- [ ] Ease Insights, My Ease Plan, Ease Routines from real records
+- [ ] Ease Tracker / Ease Journey / My Ease Story polish; exportable visit summary
+- [ ] Ease Support provider search (blocked: verified provider list)
+- [ ] Wearable BLE integration (blocked: device Bluetooth specs; demo mode until then)
+- [ ] Offline symptom recording; privacy polish; theme applied
+- [x] Roles: Admin / Healthcare Professional / User with database-enforced permissions
+- [x] Guest access to Ease Map and Profile (saved on the phone)
+- [x] /admin dashboard (live stats, users, library, facilities, professional approval, AI status, audit log)
+- [x] /professional dashboard with verification
+- [ ] First admin account (blocked: owner must sign up and share their email)
