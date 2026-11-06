@@ -8,8 +8,11 @@ import {
   Scripts,
   type ErrorComponentProps,
   useMatchRoute,
+  redirect,
 } from "@tanstack/react-router";
-import { type ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
+import { getCurrentSession } from "@/services/authService";
+import { routeRedirect } from "@/lib/route-access";
 
 import appCss from "../styles.css?url";
 import { AppShell } from "../components/AppShell";
@@ -72,6 +75,13 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  ssr: false,
+  beforeLoad: async ({ location }) => {
+    const session = await getCurrentSession().catch(() => null);
+    const role = session?.token && session.user?.status === "active" ? session.user.role : null;
+    const target = routeRedirect(location.pathname, role);
+    if (target) throw redirect({ to: target, replace: true });
+  },
   head: () => ({
     meta: [
       { charSet: "utf-8" },
@@ -111,6 +121,24 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+  useEffect(() => {
+    const refresh = () => {
+      void queryClient.cancelQueries().then(() => {
+        queryClient.clear();
+        void router.invalidate();
+      });
+    };
+    const storageChange = (event: StorageEvent) => {
+      if (event.key === "painease.demo-session" || event.key === null) refresh();
+    };
+    window.addEventListener("painease-session-change", refresh);
+    window.addEventListener("storage", storageChange);
+    return () => {
+      window.removeEventListener("painease-session-change", refresh);
+      window.removeEventListener("storage", storageChange);
+    };
+  }, [queryClient, router]);
   const matchRoute = useMatchRoute();
   const authOnly = matchRoute({ to: "/auth" }) || matchRoute({ to: "/reset-password" });
 

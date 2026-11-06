@@ -47,7 +47,15 @@ export async function loginWithGoogle(): Promise<AuthSession> {
 export async function getCurrentSession(): Promise<AuthSession | null> {
   if (!USE_MOCKS) return api.get("/auth/me"); // TODO: GET /auth/me
   await delay();
-  const value = localStorage.getItem(SESSION_KEY); return value ? JSON.parse(value) as AuthSession : null;
+  const value = localStorage.getItem(SESSION_KEY);
+  if (!value) return null;
+  try {
+    const session = JSON.parse(value) as AuthSession;
+    if (!session.token || !session.user || !["user", "professional", "admin"].includes(session.user.role) || session.user.status !== "active") return null;
+    return session;
+  } catch {
+    return null;
+  }
 }
 export async function logout(): Promise<void> {
   if (!USE_MOCKS) await api.post("/auth/logout"); else { await delay(); localStorage.removeItem(SESSION_KEY); } // TODO: POST /auth/logout
